@@ -1,0 +1,6 @@
+.DS_Store
+*.ipynb*
+*.xlsx
+*example*
+*.png
+main_window
