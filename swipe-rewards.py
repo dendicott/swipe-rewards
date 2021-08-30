@@ -3,10 +3,8 @@
 
 """
 TODO
--translate notebook functions here
+-update gui to save data when adding a row
 -add Citi, BoA, USBank application rules
--add points-to-cash conversion dictionary
--add rewards report by year
 """
 
 # In[1]:
