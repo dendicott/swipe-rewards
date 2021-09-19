@@ -1,6 +1,6 @@
-from PySide2.QtCore import Qt
+#from PySide2.QtCore import Qt
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QPointingDeviceUniqueId
+#from PyQt5.QtGui import QPointingDeviceUniqueId
 from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QWidget
 from PyQt5.QtWidgets import QGridLayout, QPushButton, QComboBox, QLineEdit
 import sys
@@ -9,6 +9,7 @@ class MyWindow(QWidget):
     def __init__(self):
         super(MyWindow, self).__init__()
         self.rows = 3
+        self.low = 2
         #self.window = QWidget()
         self.layout = QGridLayout(self)
         self.setGeometry(300, 300, 1100, 110)
@@ -31,7 +32,13 @@ class MyWindow(QWidget):
         b1 = QtWidgets.QPushButton(self)
         b1.setText("Add Row")
         b1.clicked.connect(self.clickedButton)
+        
+        b2 = QtWidgets.QPushButton(self)
+        b2.setText("Save")
+        b2.clicked.connect(self.clickedDataSave)
+        
         self.layout.addWidget(b1,0,0)
+        self.layout.addWidget(b2,0,1)
 
         self.layout.setSpacing(10)
         self.layout.addWidget(QLabel("Card Name"),1,0)
@@ -45,7 +52,8 @@ class MyWindow(QWidget):
         self.layout.addWidget(QLabel("Points Currency"),1,8)    
         
         dict = {}
-        for x in range(2,self.rows):
+
+        for x in range(self.low,self.rows):
             dict[f'comboIssuers{x}'] = QComboBox(self)
             dict[f'comboProductChange{x}'] = QComboBox(self)
             dict[f'comboBusinessCard{x}'] = QComboBox(self)
@@ -67,12 +75,14 @@ class MyWindow(QWidget):
             dict[f'comboPoints{x}'].addItems(points)
             
     def clickedButton(self):
-        #self.label.setText("you pressed the button")
         self.rows += 1
+        self.low += 1
         print(self.rows)
-        print("you clicked the button!")
-        #print(rows)
         self.update()
+        #return rows
+    
+    def clickedDataSave(self):
+        print("save data")
     
     def update(self):
         #self.label.adjustSize()

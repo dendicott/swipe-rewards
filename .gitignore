@@ -1,6 +1,6 @@
 .DS_Store
 *.ipynb*
-*.xlsx
+*credit_cards.xlsx
 *example*
 *.png
 main_window

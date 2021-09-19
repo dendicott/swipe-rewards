@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-"""
-TODO
--update gui to save data when adding a row
--add Citi, BoA, USBank application rules
-"""
-
 # In[1]:
 
 
@@ -23,7 +17,8 @@ os.system('python main_gui.py')
 # In[2]:
 
 
-credit = pd.ExcelFile('credit_cards.xlsx')
+#credit = pd.ExcelFile('credit_cards.xlsx')
+credit = pd.ExcelFile('credit_cards_test.xlsx')
 credit = credit.parse(index_col=0)
 credit = credit.fillna(0)
 today = datetime.now()
