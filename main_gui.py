@@ -9,7 +9,16 @@ class MyWindow(QWidget):
         super(MyWindow, self).__init__()
         self.rows = 3
         self.low = 2
-        self.variable_dict = {}
+        self.variable_dict_col0 = {}
+        self.variable_dict_col1 = {}
+        self.variable_dict_col2 = {}
+        self.variable_dict_col3 = {}
+        self.variable_dict_col4 = {}
+        self.variable_dict_col5 = {}
+        self.variable_dict_col6 = {}
+        self.variable_dict_col7 = {}
+        self.variable_dict_col8 = {}
+
         #self.window = QWidget()
         self.layout = QGridLayout(self)
         self.setGeometry(300, 300, 1100, 110)
@@ -17,9 +26,6 @@ class MyWindow(QWidget):
         self.initUI()
         
     def initUI(self):
-        #self.label = QtWidgets.QLabel(self)
-        #self.label.setText("Credit Card")
-        #self.label.move(50,50)
         issuers = ["American Express", "Chase", "Bank of America","Discover",
             "Citi", "Barclays", "US Bank", "Capital One"]
 
@@ -40,36 +46,26 @@ class MyWindow(QWidget):
         self.layout.addWidget(b1,0,0)
         self.layout.addWidget(b2,0,1)
 
-        # self.col0Label = QLabel("Card Name")
-        # self.col1label = QLabel("Issuer")
-        # self.col2label = QLabel("Date Opened")
-        # self.col3label = QLabel("Date Closed")
-        # self.col4label = QLabel("Points Earned")
-        # self.col5label = QLabel("Product Change")
-        # self.col6label = QLabel("Business Card")
-        # self.col7label = QLabel("Annual Fee")
-        # self.col8label = QLabel("Points Currency")
-
-        self.variable_dict['self.row1Col0'] = QLabel("Card Name")
-        self.variable_dict['self.row1Col1'] = QLabel("Issuer")
-        self.variable_dict['self.row1Col2'] = QLabel("Date Opened")
-        self.variable_dict['self.row1Col3'] = QLabel("Date Closed")
-        self.variable_dict['self.row1Col4'] = QLabel("Points Earned")
-        self.variable_dict['self.row1Col5'] = QLabel("Product Change")
-        self.variable_dict['self.row1Col6'] = QLabel("Business Card")
-        self.variable_dict['self.row1Col7'] = QLabel("Annual Fee")
-        self.variable_dict['self.row1Col8'] = QLabel("Points Currency")
+        self.variable_dict_col0['self.row1'] = QLabel("Card Name")
+        self.variable_dict_col1['self.row1'] = QLabel("Issuer")
+        self.variable_dict_col2['self.row1'] = QLabel("Date Opened")
+        self.variable_dict_col3['self.row1'] = QLabel("Date Closed")
+        self.variable_dict_col4['self.row1'] = QLabel("Points Earned")
+        self.variable_dict_col5['self.row1'] = QLabel("Product Change")
+        self.variable_dict_col6['self.row1'] = QLabel("Business Card")
+        self.variable_dict_col7['self.row1'] = QLabel("Annual Fee")
+        self.variable_dict_col8['self.row1'] = QLabel("Points Currency")
 
         self.layout.setSpacing(10)
-        self.layout.addWidget(self.variable_dict['self.row1Col0'],1,0)
-        self.layout.addWidget(self.variable_dict['self.row1Col1'],1,1)
-        self.layout.addWidget(self.variable_dict['self.row1Col2'],1,2)
-        self.layout.addWidget(self.variable_dict['self.row1Col3'],1,3)
-        self.layout.addWidget(self.variable_dict['self.row1Col4'],1,4)
-        self.layout.addWidget(self.variable_dict['self.row1Col5'],1,5)
-        self.layout.addWidget(self.variable_dict['self.row1Col6'],1,6)
-        self.layout.addWidget(self.variable_dict['self.row1Col7'],1,7)
-        self.layout.addWidget(self.variable_dict['self.row1Col8'],1,8)    
+        self.layout.addWidget(self.variable_dict_col0['self.row1'],1,0)
+        self.layout.addWidget(self.variable_dict_col1['self.row1'],1,1)
+        self.layout.addWidget(self.variable_dict_col2['self.row1'],1,2)
+        self.layout.addWidget(self.variable_dict_col3['self.row1'],1,3)
+        self.layout.addWidget(self.variable_dict_col4['self.row1'],1,4)
+        self.layout.addWidget(self.variable_dict_col5['self.row1'],1,5)
+        self.layout.addWidget(self.variable_dict_col6['self.row1'],1,6)
+        self.layout.addWidget(self.variable_dict_col7['self.row1'],1,7)
+        self.layout.addWidget(self.variable_dict_col8['self.row1'],1,8)    
         
         dict = {}
 
@@ -79,25 +75,25 @@ class MyWindow(QWidget):
             dict[f'comboBusinessCard{x}'] = QComboBox(self)
             dict[f'comboPoints{x}'] = QComboBox(self)
             
-            self.variable_dict[f'self.row{x}Col0'] = QLineEdit("e.g. AMEX Gold")
-            self.variable_dict[f'self.row{x}Col1'] = dict[f'comboIssuers{x}']
-            self.variable_dict[f'self.row{x}Col2'] = QLineEdit("YYYY-MM-DD")
-            self.variable_dict[f'self.row{x}Col3'] = QLineEdit("YYYY-MM-DD")
-            self.variable_dict[f'self.row{x}Col4'] = QLineEdit("XX,XXX")
-            self.variable_dict[f'self.row{x}Col5'] = dict[f'comboProductChange{x}']
-            self.variable_dict[f'self.row{x}Col6'] = dict[f'comboBusinessCard{x}']
-            self.variable_dict[f'self.row{x}Col7'] = QLineEdit("e.g. 0, 95")
-            self.variable_dict[f'self.row{x}Col8'] = dict[f'comboPoints{x}']
+            self.variable_dict_col0[f'self.row{x}'] = QLineEdit("e.g. AMEX Gold")
+            self.variable_dict_col1[f'self.row{x}'] = dict[f'comboIssuers{x}']
+            self.variable_dict_col2[f'self.row{x}'] = QLineEdit("YYYY-MM-DD")
+            self.variable_dict_col3[f'self.row{x}'] = QLineEdit("YYYY-MM-DD")
+            self.variable_dict_col4[f'self.row{x}'] = QLineEdit("XX,XXX")
+            self.variable_dict_col5[f'self.row{x}'] = dict[f'comboProductChange{x}']
+            self.variable_dict_col6[f'self.row{x}'] = dict[f'comboBusinessCard{x}']
+            self.variable_dict_col7[f'self.row{x}'] = QLineEdit("e.g. 0, 95")
+            self.variable_dict_col8[f'self.row{x}'] = dict[f'comboPoints{x}']
 
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col0'],x,0)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col1'],x,1)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col2'],x,2)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col3'],x,3)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col4'],x,4)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col5'],x,5)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col6'],x,6)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col7'],x,7)
-            self.layout.addWidget(self.variable_dict[f'self.row{x}Col8'],x,8)
+            self.layout.addWidget(self.variable_dict_col0[f'self.row{x}'],x,0)
+            self.layout.addWidget(self.variable_dict_col1[f'self.row{x}'],x,1)
+            self.layout.addWidget(self.variable_dict_col3[f'self.row{x}'],x,3)
+            self.layout.addWidget(self.variable_dict_col4[f'self.row{x}'],x,4)
+            self.layout.addWidget(self.variable_dict_col2[f'self.row{x}'],x,2)
+            self.layout.addWidget(self.variable_dict_col5[f'self.row{x}'],x,5)
+            self.layout.addWidget(self.variable_dict_col6[f'self.row{x}'],x,6)
+            self.layout.addWidget(self.variable_dict_col7[f'self.row{x}'],x,7)
+            self.layout.addWidget(self.variable_dict_col8[f'self.row{x}'],x,8)
 
             dict[f'comboIssuers{x}'].addItems(issuers)
             dict[f'comboProductChange{x}'].addItems(selector)
@@ -107,27 +103,36 @@ class MyWindow(QWidget):
     def clickedButton(self):
         self.rows += 1
         self.low += 1
-        print(self.rows)
         self.update()
-        #return rows
-    
+        
     def clickedDataSave(self):
-        #file_path = os.path.abspath(os.path.dirname(__file__))
-        #print(self.variable_dict['self.row2Col1'].currentText())
-        column_names = [self.variable_dict['self.row1Col0'].text(),self.variable_dict['self.row1Col1'].text(),self.variable_dict['self.row1Col2'].text(),
-                        self.variable_dict['self.row1Col3'].text(),self.variable_dict['self.row1Col4'].text(),self.variable_dict['self.row1Col5'].text(),
-                        self.variable_dict['self.row1Col6'].text(),self.variable_dict['self.row1Col7'].text(),self.variable_dict['self.row1Col8'].text()]
         
-        df = pd.DataFrame.from_dict(self.variable_dict, orient='index',
-                          columns=column_names)
-        # df[self.variable_dict['self.row1Col0'].text()] = [self.variable_dict['self.row2Col0'].text(),self.variable_dict['self.row3Col0'].text()]
+        df = pd.DataFrame()
         
-        # for column in self.variable_dict.keys():
-        #     print(column)
+        col0_data = [self.variable_dict_col0[f'self.row{row}'].text() for row in range(2,self.rows)]
+        col1_data = [self.variable_dict_col1[f'self.row{row}'].currentText() for row in range(2,self.rows)]
+        col2_data = [self.variable_dict_col2[f'self.row{row}'].text() for row in range(2,self.rows)]
+        col3_data = [self.variable_dict_col3[f'self.row{row}'].text() for row in range(2,self.rows)]
+        col4_data = [self.variable_dict_col4[f'self.row{row}'].text() for row in range(2,self.rows)]
+        col5_data = [self.variable_dict_col5[f'self.row{row}'].currentText() for row in range(2,self.rows)]
+        col6_data = [self.variable_dict_col6[f'self.row{row}'].currentText() for row in range(2,self.rows)]
+        col7_data = [self.variable_dict_col7[f'self.row{row}'].text() for row in range(2,self.rows)]
+        col8_data = [self.variable_dict_col8[f'self.row{row}'].currentText() for row in range(2,self.rows)]
         
-        # df.to_excel("output.xlsx")
+        df[self.variable_dict_col0['self.row1'].text()] = col0_data
+        df[self.variable_dict_col1['self.row1'].text()] = col1_data
+        df[self.variable_dict_col2['self.row1'].text()] = col2_data
+        df[self.variable_dict_col3['self.row1'].text()] = col3_data
+        df[self.variable_dict_col4['self.row1'].text()] = col4_data
+        df[self.variable_dict_col5['self.row1'].text()] = col5_data
+        df[self.variable_dict_col6['self.row1'].text()] = col6_data
+        df[self.variable_dict_col7['self.row1'].text()] = col7_data
+        df[self.variable_dict_col8['self.row1'].text()] = col8_data
+        
+        df.set_index(df.columns[0],inplace=True)
+        
+        df.to_excel("gui_output.xlsx")
         print(df)
-        return self.variable_dict['self.row1Col0'].text()
     
     def update(self):
         #self.label.adjustSize()
