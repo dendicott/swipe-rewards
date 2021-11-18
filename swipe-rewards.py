@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,23 +7,23 @@ from datetime import timedelta
 import math
 import os
 import sys
+import webbrowser
 
 os.system('python main_gui.py')
 
-# In[2]:
 
 points_value = {'CASH':1.0, 'UR (Chase)':0.02, 'MR (AMEX)':0.02, 'AMZN (Amazon)':1.0,
-                'RR (Southwest)':0.015, 'VR (CapOne)':0.017, 'COST (Costco)':1.0, 'TY (Citi)':0.017,
-                'SKY (Delta)':0.011, 'HH (Hilton)':0.006, 'IHG':0.005, 'AA':0.014,
-                'AM':0.018, 'MB':0.008, 'BTC':40000}
+                'RR (Southwest)':0.015, 'VR (CapOne)':0.017, 'COST (Costco)':1.0, 
+                'TY (Citi)':0.017,'SKY (Delta)':0.011, 'HH (Hilton)':0.006, 'IHG':0.005, 
+                'AA':0.014,'AM':0.018, 'MB':0.008, 'BTC':40000}
 
 def chase_5_24(dframe):
     cards = []
     open_dates = []
     for i in dframe.index:
-        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=730)) and dframe['Product Change'][i] == 'NO'        and dframe['Business Card'][i] == 'NO':
+        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=730)) and dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
             y1 = dframe['Date Opened'][i]
-            y2 = i
+            y2 = dframe['Card Name']
             cards.append(y2)
             open_dates.append(y1)
     
@@ -38,14 +32,15 @@ def chase_5_24(dframe):
     opened_cards = opened_cards.reset_index(drop=True)
     
     if len(opened_cards) < 5: 
-        print('You are eligible to apply to a Chase card now.')
+        return_string = "You are eligible to apply to a Chase card now."
     else:
         new_card = opened_cards['open dates'][3] + timedelta(days=730)
-        print('You will be eligible for a new Chase card on ' + new_card.day_name() + ' '           + new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.')
+        return_string = 'You will be eligible for a new Chase card on ' + new_card.day_name() + ' ' + \
+              new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.'
     
-    print('You have opened the following cards in the past 24 months:')
+    #print('You have opened the following cards in the past 24 months:')
     
-    return cards
+    return return_string
 
 def amex_2_90(dframe):
     """Amex 2 in 90 says that you cannot be approved for more than 2
@@ -152,16 +147,19 @@ def amex_rule_rollup(dframe):
     return amex_message
 
 def annual_fees(dframe):
-    dframe.sort_values(by="Month Opened",inplace=True)
-    print('You have the following annual fees this year:')
+    dframe.sort_values(by="Month Opened",inplace=False)
+    fee_string = "You have the following annual fees this year: "
+    #print('You have the following annual fees this year:')
+    counter = 0
     for card in dframe.index:
-        #credit.loc[card,'Date Opened'] = datetime.strptime(credit.loc[card,'Date Opened'],'%Y-%m-%d')
         if dframe.loc[card,'Date Closed'] == 0 and dframe.loc[card,'Annual Fee'] != 0:
+            if counter != 0:
+                fee_string += ","
             due_date = dframe.loc[card,'Date Opened'] + timedelta(days=30)
-            #print(str(dframe.loc[card,'Date Opened'].month) + '/' + str(dframe.loc[card,'Date Opened'].day) + ' ' + card + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
-            print(str(due_date.month) + '/' + str(due_date.day) + ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
-
-    return
+            #print(str(due_date.month) + '/' + str(due_date.day) + ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
+            fee_string += (' ' + str(due_date.month) + '/' + str(due_date.day) + ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
+            counter += 1
+    return fee_string
 
 def points_performance(credit_df, today):
     
@@ -171,8 +169,8 @@ def points_performance(credit_df, today):
     year_cutoff = today.year-4
 
     points_df = credit_df
-    points_df.drop(credit_df[credit_df['Year Bonus Earned']<year_cutoff].index,inplace=True)
-    points_df.drop(columns=to_drop,inplace=True)
+    points_df.drop(points_df[points_df['Year Bonus Earned']<year_cutoff].index,inplace=False)
+    points_df.drop(columns=to_drop,inplace=False)
     
     points_earned = pd.DataFrame()
     for year in bins:
@@ -182,8 +180,10 @@ def points_performance(credit_df, today):
     points_earned.plot(kind='bar')
     plt.title("Credit Card Rewards Performance")
     plt.ylabel("Points Value Earned ($)")
-# In[3]:
+    plt.savefig("points_performance.png")
+    plt.show()
 
+# look for gui output file, or load test file
 path = os.path.abspath(os.path.dirname(__file__))
 
 if os.path.isfile(path+'/gui_output.xlsx'):
@@ -194,54 +194,52 @@ if os.path.isfile(path+'/gui_output.xlsx'):
 else:
     credit = pd.ExcelFile('credit_cards.xlsx')
     credit = credit.parse()
-    #credit = credit.parse(index_col=0)
     credit = credit.fillna(0)
 
 today = datetime.now()
-# blank_date = str(date.today() - timedelta(365*5))
 blank_date = datetime(1970, 1, 1)
 
+# clean up default GUI inputs if un-modified by user
 credit.replace(to_replace='YYYY-MM-DD',value=blank_date,inplace=True)
 credit.replace(to_replace='XXXXX',value=0,inplace=True)
 credit.replace(to_replace='e.g. 0, 95',value=0,inplace=True)
 
 
-# In[7]:
+# cleaning data coming from gui output
 
 for card in credit.index:
-    # clean data coming from gui output
+    # convert bonus earned input to integer
     try:
         credit.loc[card,'Bonus Earned'] = int(credit.loc[card,'Bonus Earned'])
     except:
         credit.loc[card,'Bonus Earned'] = 0
     
+    # convert annual fee input to integer
     try:
         credit.loc[card,'Annual Fee'] = int(credit.loc[card,'Annual Fee'])
     except:
         credit.loc[card,'Annual Fee'] = 0
     
-    #format all date strings to datetime object for math
+    # format all date strings to datetime object for math operations
     credit.loc[card,'Date Opened'] = datetime.strptime(credit.loc[card,'Date Opened'],'%Y-%m-%d')
     
+    # format all date strings to datetime object for math operations
     if credit.loc[card,'Date Closed'] == 0:
         pass
     else:
         credit.loc[card,'Date Closed'] = datetime.strptime(credit.loc[card,'Date Closed'],'%Y-%m-%d')
     
+    # assign date bonus earned to epoch for plotting, format to datetime for math operations
     if credit.loc[card,'Date Bonus Earned'] == 0:
-        #continue
         credit.loc[card,'Date Bonus Earned'] = blank_date
     else:
         credit.loc[card,'Date Bonus Earned'] = datetime.strptime(credit.loc[card,'Date Bonus Earned'],'%Y-%m-%d')
 
-
-
-
-# In[ ]:
-#add month opened column for data sort purposes        
+# add month opened column for data sort purposes        
 
 credit.insert(2,'Month Opened',credit['Date Opened'])
 credit.insert(7,'Year Bonus Earned',credit['Date Bonus Earned'])
+
 for card in credit.index:
     credit.loc[card,'Month Opened'] = credit.loc[card,'Date Opened'].month
     
@@ -250,86 +248,55 @@ for card in credit.index:
     else:
         credit.loc[card,'Year Bonus Earned'] = credit.loc[card,'Date Bonus Earned'].year
 
-#add points value column
+# add points value column
 credit['Points Value'] = 0
 for card in credit.index:
     credit.loc[card, 'Points Value'] = credit.loc[card, 'Bonus Earned'] * points_value[credit.loc[card, 'Points Currency']]
 
-
-
-# In[4]:
-
+fees = annual_fees(credit)
+chase = chase_5_24(credit)
+amex = amex_rule_rollup(credit)
 points_performance(credit, today)
 
+# html variables to store text
+page_title_text='My report'
+title_text = 'Credit Card Maximization Report'
+subtitle_text = 'Hello, welcome to your credit card maximization report!'
+points_performance_title = 'Historical Credit Card Points Performance'
+points_performance_subtitle = 'This chart displays the USD value of credit card points \
+                                you have earned the past 5 years.'
+fees_text = 'Upcoming Annual Fees'
+chase_text = 'Chase Eligibility'
+amex_text = 'American Express Eligibility'
+stats_text = 'Credit Card History'
 
 
+# html structure
+html = f'''
+    <html>
+        <head>
+            <title>{page_title_text}</title>
+        </head>
+        <body>
+            <h1>{title_text}</h1>
+            <p>{subtitle_text}</p>
+            <h2>{points_performance_title}</h2>
+            <p>{points_performance_subtitle}</p>
+            <img src='points_performance.png' width="700">
+            <h2>{fees_text}</h2>
+            <p>{fees}</p>
+            <h2>{chase_text}</h2>
+            <p>{chase}</p>
+            <h2>{amex_text}</h2>
+            <p>{amex}</p>
+            <h2>{stats_text}</h2>
+            {credit.to_html()}
+        </body>
+    </html>
+    '''
 
-# In[5]:
-
-
-
-# In[6]:
-
-
-
-# In[16]:
-
-
-
-
-# In[ ]:
-
-
-
-# In[ ]:
-
-
-# In[68]:
-
-
-# In[ ]:
-
-bins = np.arange(today.year-4,today.year+1)
-
-to_drop = ['Issuer', 'Month Opened','Date Opened', 'Date Closed', 'Product Change',
-           'Business Card','Annual Fee']
-
-year_cutoff = today.year-4
-
-points_df = credit
-points_df.drop(credit[credit['Year Bonus Earned']<year_cutoff].index,inplace=True)
-points_df.drop(columns=to_drop,inplace=True)
-
-
-
-
-
-
-# In[69]:
-
-points_df.loc[points_df['Year Bonus Earned']==2018,'Bonus Earned'].sum()
-
-
-
-# In[ ]:
-points_earned = pd.DataFrame()
-
-for year in bins:
-    points_earned[year] = points_df.loc[points_df['Year Bonus Earned']==year,['Points Value']].sum()
-
-
-
-# %%
-points_earned = points_earned.transpose()
-points_earned.plot(kind='bar')
-plt.title("Credit Card Rewards Performance")
-plt.ylabel("Points Value Earned ($)")
-# %%
-
-
-
-
+# write html file
+with open('html_report.html', 'w') as f:
+    f.write(html)
     
-# %%
-
-# %%
+webbrowser.open('file://'+path+'/'+'html_report.html')

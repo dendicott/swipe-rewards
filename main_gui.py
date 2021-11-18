@@ -155,8 +155,9 @@ def window():
     win.show()
     sys.exit(app.exec_())
     
-window()
 
-# if __name__ == "__main__":
-#     window()
+# window()
+
+if __name__ == "__main__":
+    window()
 
