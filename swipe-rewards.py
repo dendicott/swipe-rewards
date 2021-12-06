@@ -4,13 +4,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from datetime import date
 from datetime import timedelta
-import math
 import os
-import sys
 import webbrowser
 
 os.system('python main_gui.py')
-
 
 points_value = {'CASH':1.0, 'UR (Chase)':0.02, 'MR (AMEX)':0.02, 'AMZN (Amazon)':1.0,
                 'RR (Southwest)':0.015, 'VR (CapOne)':0.017, 'COST (Costco)':1.0, 
@@ -18,10 +15,22 @@ points_value = {'CASH':1.0, 'UR (Chase)':0.02, 'MR (AMEX)':0.02, 'AMZN (Amazon)'
                 'AA':0.014,'AM':0.018, 'MB':0.008, 'BTC':40000}
 
 def chase_5_24(dframe):
+    """Executes Chase 5/24 calculation on credit dataframe.
+        Chase 5/24 says that you cannot open more than 5 cards
+        in any 24 month rolling period. Provides Chase credit
+        card approval eligibility.
+
+    Args:
+        dframe (pandas dataframe): credit dataframe built from GUI or excel file
+
+    Returns:
+        return_string (string): string containing Chase 5/24 calculation result
+    """
     cards = []
     open_dates = []
     for i in dframe.index:
-        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=730)) and dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
+        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=730)) and \
+            dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
             y1 = dframe['Date Opened'][i]
             y2 = dframe['Card Name']
             cards.append(y2)
@@ -36,30 +45,32 @@ def chase_5_24(dframe):
     else:
         new_card = opened_cards['open dates'][3] + timedelta(days=730)
         return_string = 'You will be eligible for a new Chase card on ' + new_card.day_name() + ' ' + \
-              new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.'
+            new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.'
     
     #print('You have opened the following cards in the past 24 months:')
     
     return return_string
 
 def amex_2_90(dframe):
-    """Amex 2 in 90 says that you cannot be approved for more than 2
-    credit cards in the past 90 days.
+    """Executes AMEX 2/90 calculation on credit dataframe.
+        AMEX 2 in 90 says that you cannot be approved for more than 2
+        credit cards in the past 90 days.
 
     Args:
         dframe (pandas dataframe): credit dataframe built from GUI or excel file
 
     Returns:
-        cards: list of cards you've applied for in the last 90 days
-        amex_2_90_flag: boolean flag to identify whether you violate 2 in 90 or not
-        amex_2_90_message: string fed to rollup function to identify which rule you are violating
+        cards (list of strings): list of cards you've applied for in the last 90 days
+        amex_2_90_flag (bool): boolean flag to identify whether you violate 2 in 90 or not
+        amex_2_90_message (string): string fed to rollup function to identify which rule you are violating
     """
     cards = []
     open_dates = []
-    amex_2_90_flag = 0
+    amex_2_90_flag = False
     amex_2_90_message = 'AMEX 2 in 90 calculation error'
     for i in dframe.index:
-        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=90)) and dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
+        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=90)) and\
+            dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
             y1 = dframe['Date Opened'][i]
             y2 = i
             cards.append(y2)
@@ -70,11 +81,13 @@ def amex_2_90(dframe):
     opened_cards = opened_cards.reset_index(drop=True)
     
     if len(opened_cards) < 2:
-        amex_2_90_flag = 1
+        amex_2_90_flag = True
         amex_2_90_message = 'Per AMEX 2 in 90 you are eligible to apply to a American Express card now.'
     else:
         new_card = opened_cards['open dates'][1] + timedelta(days=90)
-        amex_2_90_message = 'you will be eligible for a new American Express card on ' + new_card.day_name() + ' ' + new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.'
+        amex_2_90_message = 'you will be eligible for a new American Express card on ' + \
+            new_card.day_name() + ' ' + new_card.month_name() + ' ' + str(new_card.day) + \
+                ' '+ str(new_card.year) + '.'
     
     #print('You have opened the following cards in the past 90 days:')
     
@@ -87,16 +100,17 @@ def amex_1_5(dframe):
         dframe (pandas dataframe): credit dataframe built from GUI or excel file
 
     Returns:
-        cards: list of cards you've applied for in the last 5 days
-        amex_1_5_flag: boolean flag to identify whether you violate 1 in 5 or not
-        amex_1_5_message: string fed to rollup function to identify which rule you are violating
+        cards (list of strings): list of cards you've applied for in the last 5 days
+        amex_1_5_flag (bool): boolean flag to identify whether you violate 1 in 5 or not
+        amex_1_5_message (string): string fed to rollup function to identify which rule you are violating
     """
     cards = []
     open_dates = []
-    amex_1_5_flag = 0
+    amex_1_5_flag = False
     amex_1_5_message = 'AMEX 1 in 5 calculation error'
     for i in dframe.index:
-        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=5)) and dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
+        if dframe['Date Opened'][i] > (datetime.today() - timedelta(days=5)) and \
+            dframe['Product Change'][i] == 'NO' and dframe['Business Card'][i] == 'NO':
             y1 = dframe['Date Opened'][i]
             y2 = i
             cards.append(y2)
@@ -107,21 +121,27 @@ def amex_1_5(dframe):
     opened_cards = opened_cards.reset_index(drop=True)
     
     if len(opened_cards) < 1:
-        amex_1_5_flag = 1
+        amex_1_5_flag = True
         amex_1_5_message = 'Per AMEX 1 in 5 you are eligible to apply to a American Express card now.'
     else:
         new_card = opened_cards['open dates'][0] + timedelta(days=5)
-        amex_1_5_message = 'you will be eligible for a new American Express card on ' + new_card.day_name() + ' ' + new_card.month_name() + ' ' + str(new_card.day) + ' '+ str(new_card.year) + '.'
+        amex_1_5_message = 'you will be eligible for a new American Express card on ' + \
+            new_card.day_name() + ' ' + new_card.month_name() + ' ' + str(new_card.day) + \
+                ' '+ str(new_card.year) + '.'
     
     #print('You have opened the following cards in the past 5 days:')
     
     return cards, amex_1_5_flag, amex_1_5_message
 
 def amex_rule_rollup(dframe):
-    """Rollup fucntion for american express rules
+    """Rollup fucntion for American Express rules, provides 
+        AMEX card approval eligibility.
 
     Args:
-        credit ([type]): [description]
+        credit (pandas dataframe): credit dataframe built from GUI or excel file
+        
+    Returns:
+        amex_message (string): string providing result of combined AMEX rules
     """
     amex_message = "Error caculating AMEX eligibility rules."
     
@@ -132,40 +152,60 @@ def amex_rule_rollup(dframe):
     amex_1_5_flag = amex_1_5(dframe)[1]
     amex_1_5_message = amex_1_5(dframe)[2]
     
-    if amex_1_5_flag == 1 and amex_2_90_flag == 1:
+    if amex_1_5_flag == True and amex_2_90_flag == True:
         amex_message = "You are eligible for an American Express card now."
     
-    elif amex_1_5_flag == 1 and amex_2_90_flag == 0:
+    elif amex_1_5_flag == True and amex_2_90_flag == False:
         amex_message = 'Per the 2 in 90 Rule, ' + amex_2_90_message
     
-    elif amex_1_5_flag == 0 and amex_2_90_flag == 1:
+    elif amex_1_5_flag == False and amex_2_90_flag == True:
         amex_message = 'Per the 1 in 5 Rule, ' + amex_1_5_message
     
     else:
-        amex_message = 'Per the 1 in 5 Rule, ' + amex_1_5_message + ' Per the 2 in 90 Rule, ' + amex_2_90_message
+        amex_message = 'Per the 1 in 5 Rule, ' + amex_1_5_message + \
+            ' Per the 2 in 90 Rule, ' + amex_2_90_message
     
     return amex_message
 
 def annual_fees(dframe):
+    """Sorts credit dataframe to find cards with annual fees, returns
+        string containing all credit cards with annual fees, the 
+        associated due date and fee amount. 
+
+    Args:
+        dframe (pandas dataframe): credit dataframe built from GUI or excel file
+
+    Returns:
+        fee_string (string): string containing cards with annual fees, due date, fee amount
+    """
+    
     dframe.sort_values(by="Month Opened",inplace=False)
     fee_string = "You have the following annual fees this year: "
-    #print('You have the following annual fees this year:')
     counter = 0
     for card in dframe.index:
         if dframe.loc[card,'Date Closed'] == 0 and dframe.loc[card,'Annual Fee'] != 0:
             if counter != 0:
                 fee_string += ","
             due_date = dframe.loc[card,'Date Opened'] + timedelta(days=30)
-            #print(str(due_date.month) + '/' + str(due_date.day) + ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
-            fee_string += (' ' + str(due_date.month) + '/' + str(due_date.day) + ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
+            fee_string += (' ' + str(due_date.month) + '/' + str(due_date.day) + \
+                ' ' + dframe.loc[card,'Card Name'] + ' [$' + str(dframe.loc[card,'Annual Fee']) + ']')
             counter += 1
     return fee_string
 
 def points_performance(credit_df, today):
-    
+    """Function will sum credit card rewards over the past 5 years
+        and save a png file of matplotlib bar chart for use in html report.
+
+    Args:
+        credit_df (pandas dataframe): credit dataframe generated from gui
+        today (datetime date): todays date in datetime format
+        
+    Returns: 
+        None
+    """
     bins = np.arange(today.year-4,today.year+1)
     to_drop = ['Issuer', 'Month Opened','Date Opened', 'Date Closed', 'Product Change',
-           'Business Card','Annual Fee']
+                    'Business Card','Annual Fee']
     year_cutoff = today.year-4
 
     points_df = credit_df
@@ -181,7 +221,7 @@ def points_performance(credit_df, today):
     plt.title("Credit Card Rewards Performance")
     plt.ylabel("Points Value Earned ($)")
     plt.savefig("points_performance.png")
-    plt.show()
+    #plt.show()
 
 # look for gui output file, or load test file
 path = os.path.abspath(os.path.dirname(__file__))
@@ -197,7 +237,7 @@ else:
     credit = credit.fillna(0)
 
 today = datetime.now()
-blank_date = datetime(1970, 1, 1)
+blank_date = datetime(1970, 1, 1) # epoch used to fill in blank dates in DF
 
 # clean up default GUI inputs if un-modified by user
 credit.replace(to_replace='YYYY-MM-DD',value=blank_date,inplace=True)
@@ -235,8 +275,7 @@ for card in credit.index:
     else:
         credit.loc[card,'Date Bonus Earned'] = datetime.strptime(credit.loc[card,'Date Bonus Earned'],'%Y-%m-%d')
 
-# add month opened column for data sort purposes        
-
+# add month opened column for data sorting        
 credit.insert(2,'Month Opened',credit['Date Opened'])
 credit.insert(7,'Year Bonus Earned',credit['Date Bonus Earned'])
 
@@ -248,11 +287,12 @@ for card in credit.index:
     else:
         credit.loc[card,'Year Bonus Earned'] = credit.loc[card,'Date Bonus Earned'].year
 
-# add points value column
+# add points value column to convert credit card points to USD 
 credit['Points Value'] = 0
 for card in credit.index:
     credit.loc[card, 'Points Value'] = credit.loc[card, 'Bonus Earned'] * points_value[credit.loc[card, 'Points Currency']]
 
+# variables to build html report
 fees = annual_fees(credit)
 chase = chase_5_24(credit)
 amex = amex_rule_rollup(credit)
