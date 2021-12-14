@@ -232,7 +232,7 @@ if os.path.isfile(path+'/gui_output.xlsx'):
     credit = credit.fillna(0)
     
 else:
-    credit = pd.ExcelFile('credit_cards.xlsx')
+    credit = pd.ExcelFile('credit_cards_test.xlsx')
     credit = credit.parse()
     credit = credit.fillna(0)
 
